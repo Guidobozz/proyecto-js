@@ -1,476 +1,402 @@
+/*
+ Carrito que se vea en si no lo hice, porque como es una consecionaria nadie va a comprar mas de un vehiculo.
+ lo que intente fue hacer un carrito que no se almacene mas de un vehiculo y en el localStorage guardar todos lo que
+ se vayan comprando. 
+ */
 
 let nombre = '';
 
-while (nombre === '') {
-  nombre = prompt("Ingrese su nombre");
-
-  if (nombre === '') {
-    alert("Debe ingresar su nombre para continuar");
-  }
+function pedirNombre() {
+  return Swal.fire({
+    title: 'Ingrese su nombre',
+    input: 'text',
+    icon: 'question',
+    inputPlaceholder: 'Ingrese su nombre',
+    showCancelButton: false,
+    confirmButtonText: 'Continuar',
+    allowOutsideClick: false,
+    inputValidator: (value) => {
+      if (!value) {
+        return 'Debe ingresar su nombre para continuar';
+      }
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      nombre = result.value;
+      mostrarNombre(); 
+    }
+  });
 }
+
 
 function mostrarNombre() {
-  alert("Bienvenido a Concesionaria Volkswagen  " + nombre);
+  Swal.fire({
+    title: `Bienvenido a Concesionaria Volkswagen, ${nombre}!`,
+    icon: 'success',
+    confirmButtonText: 'Aceptar'
+  }).then(() => {
+    mostrarLoader();
+  });
 }
 
-mostrarNombre();
-function verificarModelo(ModeloIngresado, opcionesModelo) {
-  return opcionesModelo.includes(ModeloIngresado);
-}
+pedirNombre();
 
-function verificarColor(colorIngresado, opcionesColor) {
-  return opcionesColor.includes(colorIngresado);
-}
-function verificarAnio(AnioIngresado, opcionesAnio) {
-  return opcionesAnio.includes(AnioIngresado);
-}
+function mostrarLoader() {
+  const footer = document.getElementById('ft');
+  footer.style.display = 'none';
 
-let categoriaSeleccionada = prompt(
-  `${nombre}, elija la categoría de auto:\n` +
-  `1. Sedán\n` +
-  `2. Camioneta\n` +
-  `3. Coupe\n` +
-  `4. SUV`
-);
+  const cardContainer = document.getElementById('cardcontainer');
+  cardContainer.style.display = 'none';
 
-let modeloSeleccionado;
-let anioSeleccionado;
-let colorSeleccionado = '';
+  document.body.classList.add('loading');
 
-function seleccionarModelo(modelos, nombre) {
-  let modeloSeleccionado;
-  while (true) {
-    modeloSeleccionado = prompt(nombre + " Ingrese el modelo de la categoría seleccionada (" + modelos.join(", ") + ")").trim();
-    if (modelos.includes(modeloSeleccionado)) {
-      return modeloSeleccionado;
-    } else {
-      alert(nombre + " Ingrese un modelo válido!");
-    }
-  }
-}
+  const loaderContainer = document.createElement("div");
+  loaderContainer.className = "loader-container";
 
-function seleccionarColor(colores, nombre) {
-  let colorSeleccionado;
-  while (true) {
-    let coloresTexto = colores.join("\n");
-    colorSeleccionado = prompt("Seleccione el color:\n" + coloresTexto);
-    if (parseInt(colorSeleccionado) >= 1 && parseInt(colorSeleccionado) <= colores.length) {
-      return colores[parseInt(colorSeleccionado) - 1];
-    } else {
-      alert(nombre + " Seleccione un color válido!");
-    }
-  }
-}
+  const loader = document.createElement("span");
+  loader.className = "loader";
 
-function seleccionarModelo(modelos, nombre) {
-  let modeloSeleccionado;
-  while (true) {
-    modeloSeleccionado = prompt(nombre + " Ingrese el modelo de la categoría seleccionada (" + modelos.join(", ") + ")").trim();
-    if (modelos.includes(modeloSeleccionado)) {
-      localStorage.setItem("modeloSeleccionado", modeloSeleccionado);
-      return modeloSeleccionado;
-    } else {
-      alert(nombre + " Ingrese un modelo válido!");
-    }
-  }
-}
+  loaderContainer.appendChild(loader);
+  document.body.appendChild(loaderContainer);
 
-function obtenerPrecio(modelo, anio) {
-  if (precios.hasOwnProperty(modelo) && precios[modelo].hasOwnProperty(anio)) {
-  return precios[modelo.toLowerCase()][anio];
-  } else {
-    return null; 
-  }
+  setTimeout(() => {
+    loaderContainer.style.display = 'none';
+    document.body.classList.remove('loading');
+    footer.style.display = 'block';
+    cardContainer.style.display = 'flex'; 
+  }, 3000);
 }
 
 
+function cargarCarrito() {
+  carrito = JSON.parse(localStorage.getItem('carrito')) || {};
+  contadorCarrito = Object.keys(carrito).length + 1;
+}
 
-  let precios = {
-    "bora":{
-      "2011/150.000km": 7900000,
-      "2018/85.000km": 14000000,
-      "2023/0km": 2500000,
-    },
-    "vento":{
-      "2019/65.000km": 15000000,
-      "2017/90.000km": 11000000,
-      "2021/15.000km": 16500000,
-    },
-    "passatt":{
-      "2018/120.000km": 12000000,
-      "2019/50.000km": 14800000,
-      "2022/28.000km": 18000000,
-    },
-    "amarok tdi":{
-      "2010/180.000km": 11000000,
-      "2019/75.000km" : 22000000,
-      "2023/0km": 35000000,
-    },
-    "amarok v6":{
-      "2022/18.000km": 30000000,
-      "2015/1000.000km": 18000000,
-      "2021/10.000km": 38000000,
-    },
-    "touareg":{
-      "2023/0km": 45000000,
-      "2023/2.000km": 39000000,
-      "2023/11.000km": 34500000,
-    },
-    "fox":{
-      "2011/150.000km": 6200000,
-      "2018/85.000km": 9000000,
-      "2023/0km": 15000000,
-    },
-    "Gol Trend":{
-      "2011/150.000km": 6500000,
-      "2018/85.000km": 8400000,
-      "2023/0km": 11000000,
-    },
-    "Scirocco":{
-      "2011/150.000km": 19000000,
-      "2018/85.000km": 36000000,
-      "2023/0km": 48000000,
-    },
-    "Suran":{
-      "2011/150.000km": 5800000,
-      "2018/85.000km": 10000000,
-      "2023/0km": 15000000,
-    },
-    "Tiguan":{
-      "2011/150.000km": 12000000,
-      "2018/85.000km": 31000000,
-      "2023/0km": 55000000,
-    },
-    "Taos":{
-      "2011/150.000km": 0,
-      "2018/85.000km": 0,
-      "2023/0km": 38000000,
-    },
+document.addEventListener('DOMContentLoaded', () => {
+  cargarCarrito();
+  fetchData();
+  traerh1();
+  subtitulo();
+  crearFooter();
+  pedirNombre(); 
+  createContactForm();
+}); 
+
+
+let carrito = JSON.parse(localStorage.getItem('carrito')) || {};
+let contadorCarrito = Object.keys(carrito).length + 1;
+
+
+const fetchData = async () => {
+  try {
+    const res = await fetch('http://localhost:5500/lista.json'); 
+    const data = await res.json();
     
+    createCards(data);
+  } catch (error) {
+    
+  }
 }
 
 
+function createCards(data) {
+  const cardContainer = document.getElementById('cardcontainer');
 
-switch (categoriaSeleccionada) {
-  case "1":
-      categoriaSeleccionada = "Sedán";
-      let modelosSedan = {
-        "bora": { anios: ["2011/150.000km", "2018/85.000km", "2023/0km"] },
-        "vento": { anios: ["2019/65.000km", "2017/90.000km", "2021/15.000km"] },
-        "passatt": { anios: ["2018/120.000km", "2019/50.000km", "2022/28.000km"] }
-      };
-      let coloresSedan = ["1. Rojo", "2. Blanco", "3. Negro", "4. Gris Plomo"];
-      let modeloSeleccionadoSedan;
-      while (true) {
-        modeloSeleccionadoSedan = prompt(nombre + " Ingrese el modelo de la categoría seleccionada (Bora, Vento, Passatt)").toLowerCase();
-        if (modelosSedan.hasOwnProperty(modeloSeleccionadoSedan)) {
-          break;
-        } else {
-          alert(nombre + " Ingrese un modelo válido!");
-        }
-      }
-      let colorSeleccionadoSedan;
-      while (true) {
-        let coloresTexto = coloresSedan.join("\n");
-        colorSeleccionadoSedan = prompt("Seleccione el color:\n" + coloresTexto);
-        if (parseInt(colorSeleccionadoSedan) >= 1 && parseInt(colorSeleccionadoSedan) <= coloresSedan.length) {
-          break;
-        } else {
-          alert(nombre + " Seleccione un color válido!");
-        }
-      }
-      switch (parseInt(colorSeleccionadoSedan)) {
-        case 1:
-          colorSeleccionadoSedan = "Rojo";
-          break;
-        case 2:
-          colorSeleccionadoSedan = "Blanco";
-          break;
-        case 3:
-          colorSeleccionadoSedan = "Negro";
-          break;
-        case 4:
-          colorSeleccionadoSedan = "Gris Plomo";
-          break;
-      }
+  function addToCarrito(auto) {
+    carrito[contadorCarrito] = auto;
+    contadorCarrito++;
+    guardarCarrito();
   
-      let anioSeleccionadoSedan;
-      while (true) {
-        let aniosTexto = modelosSedan[modeloSeleccionadoSedan].anios.map((anio, index) => `${index + 1}. ${anio}`).join("\n");
-        anioSeleccionadoSedan = prompt("Años disponibles:\n" + aniosTexto);
-        anioSeleccionadoSedan = modelosSedan[modeloSeleccionadoSedan].anios[parseInt(anioSeleccionadoSedan) - 1];
-        if (anioSeleccionadoSedan) {
-          let precioSedan = obtenerPrecio(modeloSeleccionadoSedan, anioSeleccionadoSedan);
-          if (precioSedan !== null) {
-            alert(`El precio del ${modeloSeleccionadoSedan.charAt(0).toUpperCase() + modeloSeleccionadoSedan.slice(1)} ${anioSeleccionadoSedan} es: ${precioSedan}`);
-          } else {
-            alert(nombre + " No se encontró el precio para este vehículo");
-          }
-          break;
-        } else {
-          alert(nombre + " Seleccione un año válido!");
-        }
-      }
-        modeloSeleccionado = modeloSeleccionadoSedan;
-        anioSeleccionado = anioSeleccionadoSedan;
-      break;
-  case "2":
-      categoriaSeleccionada = "Camioneta";
-      let modelosCamioneta = {
-        "amarok tdi": { anios: ["2010/180.000km", "2019/75.000km", "2023/0km"] },
-        "amarok v6": { anios: ["2022/18.000km", "2015/100.000km", "2021/10.000km"] },
-        "touareg": { anios: ["2023/0km", "2023/2.000km", "2023/11.000km"] }
-      };
-      let opcionesModelosCamioneta = Object.keys(modelosCamioneta);
-      let modeloSeleccionadoCamioneta;
-
-      while (true) {
-        modeloSeleccionadoCamioneta = prompt(nombre + " Ingrese el modelo de la categoría seleccionada (Amarok TDI, Amarok v6, Touareg)").toLowerCase();
-        if (opcionesModelosCamioneta.includes(modeloSeleccionadoCamioneta)) {
-          break;
-        } else {
-          alert(nombre + " Ingrese un modelo válido!");
-        }
-      }
-
-      let coloresCamioneta = ["1. Azul", "2. Blanco", "3. Negro", "4. Gris Plomo"];
-      let colorSeleccionadoCamioneta;
-
-      while (true) {
-        let coloresTexto = coloresCamioneta.join("\n");
-        colorSeleccionadoCamioneta = prompt("Seleccione el color:\n" + coloresTexto);
-        if (parseInt(colorSeleccionadoCamioneta) >= 1 && parseInt(colorSeleccionadoCamioneta) <= coloresCamioneta.length) {
-          break;
-        } else {
-          alert(nombre + " Seleccione un color válido!");
-        }
-      }
-
-      switch (parseInt(colorSeleccionadoCamioneta)) {
-        case 1:
-          colorSeleccionadoCamioneta = "Azul";
-          break;
-        case 2:
-          colorSeleccionadoCamioneta = "Blanco";
-          break;
-        case 3:
-          colorSeleccionadoCamioneta = "Negro";
-          break;
-        case 4:
-          colorSeleccionadoCamioneta = "Gris Plomo";
-          break;
-      }
-
-      let anioSeleccionadoCamioneta;
-      while (true) {
-        let aniosTexto = modelosCamioneta[modeloSeleccionadoCamioneta].anios.map((anio, index) => `${index + 1}. ${anio}`).join("\n");
-        anioSeleccionadoCamioneta = prompt("Años disponibles:\n" + aniosTexto);
-        anioSeleccionadoCamioneta = modelosCamioneta[modeloSeleccionadoCamioneta].anios[parseInt(anioSeleccionadoCamioneta) - 1];
-        if (anioSeleccionadoCamioneta) {
-          break;
-        } else {
-          alert(nombre + " Seleccione un año válido!");
-        }
-      }
-      let precioCamioneta = obtenerPrecio(modeloSeleccionadoCamioneta, anioSeleccionadoCamioneta);
-      if (precioCamioneta !== null) {
-        alert(`El precio del ${modeloSeleccionadoCamioneta} ${anioSeleccionadoCamioneta} es: ${precioCamioneta}`);
+    Swal.fire({
+      title: `${nombre}`,
+      text: `Has añadido ${auto.title} al carrito. ¿Quieres iniciar la compra?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        iniciarCompra(auto);
       } else {
-        alert(nombre + " No se encontró el precio para este vehículo");
-      }
-      modeloSeleccionado = modeloSeleccionadoCamioneta;
-      anioSeleccionado = anioSeleccionadoCamioneta;
-      break;
-
-      case "3":
-      categoriaSeleccionada = "Coupe";
-      let modelosCoupe = ["fox", "gol trend", "scirocco"];
-      let coloresCoupe = ["1. Rojo", "2. Blanco", "3. Negro", "4. Gris Plomo"];
-      let aniosCoupe = ["2011/150.000km", "2018/85.000km", "2023/0km"];
-
-      let modeloSeleccionadoCoupe;
-      while (true) {
-        modeloSeleccionadoCoupe = seleccionarModelo(modelosCoupe, nombre);
-        if (modelosCoupe.includes(modeloSeleccionadoCoupe)) {
-          break;
-        } else {
-          alert(nombre + " Ingrese un modelo válido!");
-        }
-      }
-
-      let colorSeleccionadoCoupe;
-      while (true) {
-        colorSeleccionadoCoupe = seleccionarColor(coloresCoupe, nombre);
-        if (verificarColor(colorSeleccionadoCoupe, coloresCoupe)) {
-          break;
-        } else {
-          alert(nombre + " Seleccione un color válido!");
-        }
-      }
-
-      let anioSeleccionadoCoupe;
-      while (true) {
-        anioSeleccionadoCoupe = seleccionarAnio(aniosCoupe, nombre);
-        if (verificarAnio(anioSeleccionadoCoupe, aniosCoupe)) {
-          break;
-        } else {
-          alert(nombre + " Seleccione un año válido!");
-        }
-      }
-
-      modeloSeleccionado = modeloSeleccionadoCoupe.charAt(0).toUpperCase() + modeloSeleccionadoCoupe.slice(1);
-      anioSeleccionado = anioSeleccionadoCoupe;
-
-      let precioCoupe = obtenerPrecio(modeloSeleccionadoCoupe.toLowerCase(), anioSeleccionadoCoupe);
-      if (precioCoupe !== null) {
-        alert(`El precio del ${modeloSeleccionado} ${anioSeleccionado} es: ${precioCoupe}\n¿Desea comprar este auto?`);
-      } else {
-        alert(nombre + " No se encontró el precio para este vehículo");
-      }
-
-      break
-      case "4":
-        categoriaSeleccionada = "SUV";
-        let modelosSUV = ["Suran", "Tiguan", "Taos"];
-        let coloresSUV = ["1. Rojo", "2. Blanco", "3. Negro", "4. Gris Plomo"];
-        let aniosSUV = ["2011/150.000km", "2018/85.000km", "2023/0km"];
-
-        let modeloSeleccionadoSUV;
-        while (true) {
-          modeloSeleccionadoSUV = seleccionarModelo(modelosSUV.map(modelo => modelo.toLowerCase()), nombre);
-          if (modelosSUV.includes(modeloSeleccionadoSUV.charAt(0).toUpperCase() + modeloSeleccionadoSUV.slice(1))) {
-            break;
-          } else {
-            alert(nombre + " Ingrese un modelo válido!");
-          }
-        }
-
-        let colorSeleccionadoSUV;
-        while (true) {
-          colorSeleccionadoSUV = seleccionarColor(coloresSUV, nombre);
-          if (verificarColor(colorSeleccionadoSUV, coloresSUV)) {
-            break;
-          } else {
-            alert(nombre + " Seleccione un color válido!");
-          }
-        }
-
-        let anioSeleccionadoSUV;
-        if (modeloSeleccionadoSUV.toLowerCase() === "taos") {
-          while (true) {
-            anioSeleccionadoSUV = seleccionarAnio(["2023/0km"], nombre);
-            if (verificarAnio(anioSeleccionadoSUV, ["2023/0km"])) {
-              break;
-            } else {
-              alert(nombre + " Seleccione un año válido!");
-            }
-          }
-        } else {
-          anioSeleccionadoSUV = seleccionarAnio(aniosSUV, nombre);
-        }
-
-        let precioSUV = obtenerPrecio(modeloSeleccionadoSUV.toLowerCase(), anioSeleccionadoSUV.toLowerCase()); // Convertir a minúsculas
-        if (precioSUV !== null) {
-          alert(`El precio del ${modeloSeleccionadoSUV} ${anioSeleccionadoSUV} es: ${precioSUV}`);
-        } else {
-          alert(nombre + " No se encontró el precio para este vehículo");
-        }
-        modeloSeleccionado = modeloSeleccionadoSUV;
-        anioSeleccionado = anioSeleccionadoSUV;
-        break;
+        carrito = {};
+        contadorCarrito = 1;
         
-}
-
-  function metodoDePago() {
-    let metodoPago = prompt(nombre + " Seleccione el método de pago:\n1. Efectivo\n2. Tarjeta de crédito\n3. Transferencia bancaria");
-  
-    switch (metodoPago) {
-      case "1":
-        alert("Pago confirmado. Gracias por su compra en efectivo.");
-        break;
-      case "2":
-     let numeroTarjeta;
-      while (true) {
-        numeroTarjeta = prompt("Ingrese el número de tarjeta de crédito:");
-        if (!isNaN(numeroTarjeta) && numeroTarjeta !== null && numeroTarjeta !== "" && numeroTarjeta.trim() !== "") {
-          break; 
-        } else {
-          alert(nombre + " Por favor, ingrese solo números para la tarjeta de crédito.");
-        }
+        
+       
       }
-      alert(`Pago confirmado. Gracias por su compra con la tarjeta de crédito terminada en ${numeroTarjeta.slice(-4)}.`);
-      break;
-      case "3":
-         let cuentaBancaria;
-      while (true) {
-        cuentaBancaria = prompt("Ingrese el número de cuenta bancaria:");
-        if (!isNaN(cuentaBancaria) && cuentaBancaria !== null && cuentaBancaria !== "" && cuentaBancaria.trim() !== "") {
-          break; 
-        } else {
-          alert(nombre + " Por favor, ingrese solo números para la cuenta bancaria.");
-        }
-      }
-      alert(`Pago confirmado. Gracias por su compra mediante transferencia bancaria a la cuenta ${cuentaBancaria}.`);
-      break;
-    default:
-      alert(nombre + " Método de pago no válido. La compra ha sido cancelada.");
+    });
   }
-}
-  
-  let precioVehiculo = obtenerPrecio(modeloSeleccionado, anioSeleccionado);
 
-  document.addEventListener("DOMContentLoaded", function() {
-    let comprarAuto = confirm(`El precio del ${modeloSeleccionado.charAt(0).toUpperCase() + modeloSeleccionado.slice(1)} ${anioSeleccionado} es: ${precioVehiculo}\n¿Desea comprar este auto?`);
-  
-    if (comprarAuto) {
-      metodoDePago();
-  
-      var imagenAuto;
-      switch (colorSeleccionado.toLowerCase()) {
-        case "rojo":
-          imagenAuto = document.getElementById("imagenborarojo");
-          break;
-        case "blanco":
-          imagenAuto = document.getElementById("imagenborablanco");
-          break;
-        case "negro":
-          imagenAuto = document.getElementById("imagenboranegro");
-          break;
-        case "gris":
-          imagenAuto = document.getElementById("imagenboragris");
-          break;
-        default:
-          imagenAuto = null
+  function iniciarCompra(auto) {
+    Swal.fire({
+      title: 'Selecciona el método de pago:',
+      icon: 'warning',
+      input: 'select',
+      inputOptions: {
+        '1': 'Efectivo',
+        '2': 'Transferencia',
+        '3': 'Plan de pago',
+      },
+      inputPlaceholder: 'Selecciona un método de pago',
+      showCancelButton: true,
+      confirmButtonText: 'Continuar',
+      cancelButtonText: 'Cancelar',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'Debes seleccionar un método de pago para continuar';
+        }
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const metodoPago = result.value;
+
+        if (metodoPago === '1') {
+          Swal.fire(`Pago en efectivo para ${auto.title}`, '¡Gracias por tu compra!', 'success');
+        } else if (metodoPago === '2') {
+          Swal.fire({
+            title: `Transferencia para ${auto.title}`,
+            text: 'Ingresa el número de cuenta bancaria:',
+            input: 'text',
+            showCancelButton: true,
+            confirmButtonText: 'Realizar transferencia',
+            cancelButtonText: 'Cancelar',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              const numeroCuenta = result.value;
+              Swal.fire(`Transferencia realizada para ${auto.title}`, `Número de cuenta: ${numeroCuenta}. ¡Gracias por tu compra!`, 'success');
+            }
+          });
+        } else if (metodoPago === '3') {
+          const cuotas = 12;
+          const precioConInteres = auto.precio * 1.25;
+          const cuotaMensual = precioConInteres / cuotas;
+
+          Swal.fire({
+            title: `Plan de pago para ${auto.title}`,
+            text: `Seleccionaste un plan de pago en ${cuotas} cuotas con un interés del 25%. Cada cuota será de ${cuotaMensual.toFixed(2)}. ¿Quieres continuar con la compra?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí',
+            cancelButtonText: 'No',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              addToCarrito(auto);
+              ingresarDatosCompra();
+            } else {
+              Swal.fire('Compra cancelada', '', 'error');
+            }
+          });
+        } else {
+          Swal.fire('Compra cancelada', 'No se ha seleccionado un método de pago válido.', 'error');
+        }
       }
-  
-      imagenAuto.src = `./medios/${modeloSeleccionado.toLowerCase()}${colorSeleccionado.toLowerCase()}.png`;
-  
-      imagenAuto.onload = function () {
-        console.log("La imagen se ha cargado completamente");
-      };
-    } else {
-      alert(nombre + " Gracias por visitar Concesionaria Volkswagen.");
+    });
+  }
+
+
+
+function ingresarDatosCompra() {
+  Swal.fire({
+    title: 'Ingresa tus datos de compra',
+    html: `
+      <input type="text" id="numeroTarjeta" class="swal2-input" placeholder="Número de tarjeta">
+      <input type="text" id="dni" class="swal2-input" placeholder="Número de DNI">
+      <input type="text" id="nombreApellido" class="swal2-input" placeholder="Nombre y apellido">
+    `,
+    showCancelButton: true,
+    confirmButtonText: 'Finalizar compra',
+    cancelButtonText: 'Cancelar',
+    preConfirm: () => {
+      const numeroTarjeta = document.getElementById('numeroTarjeta').value;
+      const dni = document.getElementById('dni').value;
+      const nombreApellido = document.getElementById('nombreApellido').value;
+
+      return { numeroTarjeta, dni, nombreApellido };
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const { numeroTarjeta, dni, nombreApellido } = result.value;
+      Swal.fire(
+        '¡Gracias por tu compra!',
+        `
+        Número de tarjeta: ${numeroTarjeta}
+        DNI: ${dni}
+        Nombre y apellido: ${nombreApellido}`,
+        'success'
+      );
+
+      carrito = {};
+      contadorCarrito = 1;
+      guardarCarrito();
     }
   });
-  document.addEventListener("DOMContentLoaded", function () {
-    var nombreImagen = `${modeloSeleccionado.toLowerCase()}${colorSeleccionado.toLowerCase()}`;
+}
+
+
+
+  function guardarCarrito() {
+    localStorage.setItem('carrito', JSON.stringify(carrito));
     
-    var imagenAuto = document.getElementById(`imagen${nombreImagen}`);
-  
-    if (imagenAuto) {
-      var tempImage = new Image();
-      tempImage.onload = function () {
-        imagenAuto.src = `./medios/${nombreImagen}.png`;
-        console.log("La imagen se ha cargado completamente");
-      };
-      tempImage.onerror = function () {
-        console.log("Imagen no encontrada");
-        imagenAuto.style.display = "none";
-      };
-      tempImage.src = `./medios/${nombreImagen}.png`;
-    } else {
-      console.log("Elemento de imagen no encontrado");
-    }
+  }
+
+
+
+  data.forEach(car => {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const image = document.createElement('img');
+      image.src = car.thumbnailUrl;
+      image.alt = car.title;
+
+      const description = document.createElement('p');
+      description.textContent = car.description;
+
+      const price = document.createElement('p');
+      price.textContent = `Precio: ${car.precio}`;
+
+      const title = document.createElement('h3');
+      title.textContent = car.title;
+
+      const button = document.createElement('button');
+      button.textContent = 'Comprar';
+
+      button.addEventListener('click', () => {
+        addToCarrito(car);
+    });
+
+      card.appendChild(image);
+      card.appendChild(title);
+      card.appendChild(description);
+      card.appendChild(price);
+      card.appendChild(button);
+
+    cardContainer.appendChild(card);
+});
+}
+
+
+
+function traerh1() {
+  const nav = document.getElementById('nav');
+  const title = document.createElement('h1');
+  title.textContent = 'Concesionaria Bozzano'; 
+  nav.appendChild(title);
+}
+
+function subtitulo() {
+  const nav = document.getElementById('subtitulo');
+  const title = document.createElement('h2');
+  title.textContent = 'Servicios, Innovación, Tecnología'; 
+  nav.appendChild(title);
+}
+
+
+function crearFooter() {
+  const ft = document.getElementById('ft');
+
+  const contenedorFooter = document.createElement('div');
+  contenedorFooter.className = 'contenedor-footer';
+
+  ft.appendChild(contenedorFooter);
+
+  const card1 = document.createElement('div');
+  card1.className = 'card-footer'; 
+
+  const imagen1 = document.createElement('img');
+  imagen1.src = 'https://assets.volkswagen.com/is/image/volkswagenag/cobertura?Zml0PWNyb3AsMSZmbXQ9d2VicCZxbHQ9Nzkmd2lkPTEwODAmaGVpPTEwODAmYWxpZ249MC4wMCwwLjAwJmJmYz1vZmYmM2Q5YQ==';
+  imagen1.alt = 'Imagen 1';
+
+  const subtitulo1 = document.createElement('h3');
+  subtitulo1.textContent = 'Nueva Cobertura VW Zurich';
+
+  const parrafo1 = document.createElement('p');
+  parrafo1.textContent = 'Encontrá las mejores opciones de seguro para tu Volkswagen y viajá con tranquilidad.';
+
+  card1.appendChild(imagen1);
+  card1.appendChild(subtitulo1);
+  card1.appendChild(parrafo1);
+
+  contenedorFooter.appendChild(card1);
+
+  const card2 = document.createElement('div');
+  card2.className = 'card-footer'; 
+
+  const imagen2 = document.createElement('img');
+  imagen2.src = 'https://assets.volkswagen.com/is/image/volkswagenag/newsroommmm?Zml0PWNyb3AsMSZmbXQ9d2VicCZxbHQ9Nzkmd2lkPTEyODAmaGVpPTg1MyZhbGlnbj0wLjAwLDAuMDAmYmZjPW9mZiZkMjE3';
+  imagen2.alt = 'Imagen 2';
+
+  const subtitulo2 = document.createElement('h3');
+  subtitulo2.textContent = 'Las novedades están en Volkswagen Newsroom';
+
+  const parrafo2 = document.createElement('p');
+  parrafo2.textContent = 'Descubrí acá las últimas noticias de la marca: Lanzamientos, servicios, inversiones y toda la información sobre la nueva era de la movilidad.';
+
+  card2.appendChild(imagen2);
+  card2.appendChild(subtitulo2);
+  card2.appendChild(parrafo2);
+
+  contenedorFooter.appendChild(card2);
+
+  const card3 = document.createElement('div');
+  card3.className = 'card-footer'; 
+
+  const imagen3 = document.createElement('img');
+  imagen3.src = 'https://assets.volkswagen.com/is/image/volkswagenag/tecnologia?Zml0PWNyb3AsMSZmbXQ9d2VicCZxbHQ9Nzkmd2lkPTE3OTUmaGVpPTE3OTUmYWxpZ249MC4wMCwwLjAwJmJmYz1vZmYmOWFkNg==';
+  imagen3.alt = 'Imagen 3';
+
+  const subtitulo3 = document.createElement('h3');
+  subtitulo3.textContent = 'Tecnología Volkswagen pensada para vos';
+
+  const parrafo3 = document.createElement('p');
+  parrafo3.textContent = 'Subí a tu VW y seguí conectado con todo lo que te importa. Viví la movilidad del futuro y descubrí una tecnología pensada para que cada viaje sea más fácil, seguro y entretenido.';
+
+  card3.appendChild(imagen3);
+  card3.appendChild(subtitulo3);
+  card3.appendChild(parrafo3);
+
+  contenedorFooter.appendChild(card3);
+}
+
+
+function createContactForm() {
+
+  const formContainer = document.getElementById('formulario'); 
+  const form = document.createElement('form');
+  form.id = 'formulario';
+
+  const emailLabel = document.createElement('label');
+  emailLabel.setAttribute('for', 'email');
+  emailLabel.textContent = 'Correo Electrónico:';
+
+  const emailInput = document.createElement('input');
+  emailInput.type = 'email';
+  emailInput.id = 'email';
+  emailInput.name = 'email';
+  emailInput.required = true;
+
+  const additionalInfo = document.createElement('p');
+  additionalInfo.textContent = 'Ingresa tu correo electrónico para recibir más información.';
+
+  const submitBtn = document.createElement('button');
+  submitBtn.type = 'submit';
+  submitBtn.id = 'submitBtn';
+  submitBtn.textContent = 'Enviar';
+  submitBtn.classList.add('btn', 'btn-primary'); 
+
+  submitBtn.addEventListener('click', function (event) {
+   
+    event.preventDefault();
+    Toastify({
+      text: 'Correo electrónico enviado',
+      duration: 3000
+    }).showToast();
   });
-  
- 
+
+  form.appendChild(emailLabel);
+  form.appendChild(emailInput);
+  form.appendChild(additionalInfo); 
+  form.appendChild(submitBtn);
+  formContainer.appendChild(form);
+}

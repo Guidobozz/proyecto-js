@@ -1,0 +1,146 @@
+body {
+    background-color:rgb(255, 255, 255);
+    font-family: 'Open Sans', sans-serif;
+   
+}
+.cards {
+    border: 1px solid #8f8f8f;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: center;
+}
+
+.card {
+    flex: 1; 
+    max-width: 200px; 
+    margin: 0 8px 16px; 
+}
+
+.cards img {
+    max-width: 100%;
+    height: 135px; 
+    object-fit: cover; 
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+.cards button{
+    background-color:rgb(241, 240, 240);
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.card h3 {
+    margin-bottom: 8px; 
+}
+
+.card p {
+    margin-bottom: 16px; 
+}
+.card button:hover {
+    background-color:cornflowerblue;
+}
+.navh1{
+    padding: 10px; 
+    text-align: center; 
+    background-color:rgb(0, 10, 150);
+    color: rgb(255, 255, 255);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 2rem; 
+    margin: 0; 
+}
+footer {
+  background-color: rgb(0, 10, 150);
+  color: white;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.2rem; 
+  padding: 20px; 
+}
+
+.contenedor-footer {
+  display: flex;
+  align-items: center;
+}
+
+.card-footer {
+  padding: 16px;
+  margin: 16px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: center;
+}
+.subitulocss{
+background-color:  rgb(255, 255, 255);
+color: rgb(0, 0, 0);
+font-family: 'Open Sans', sans-serif;
+font-size: 2rem; 
+text-align: center;
+}
+.card-footer img {
+  width: 100%;
+  height: 250px; 
+  object-fit: cover; 
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+body.loading .cards {
+  display: none;
+}
+.loader {
+  width: 48px;
+  height: 48px;
+  display: inline-block;
+  position: relative;
+  }
+.loader::after,
+.loader::before {
+    content: '';  
+    box-sizing: border-box;
+    width: 48px;
+    height: 48px;
+    border: 2px solid #FFF;
+    position: absolute;
+    left: 0;
+    top: 0;
+    animation: rotation 2s ease-in-out infinite alternate;
+}
+.loader-container {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+
+}
+.loader::after {
+    border-color: #FF3D00;
+    animation-direction: alternate-reverse;
+}
+  
+@keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+} 
+
+body.loading #cardcontainer {
+    display: none;
+}
+
+.loading .cards {
+    display: none;
+}
+body.loading .loader-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}

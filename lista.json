@@ -1,0 +1,44 @@
+[
+    {
+      "precio": 7900000,
+      "id": 1,
+      "title": "Bora",
+      "description": "2011/150.000km",
+      "thumbnailUrl": "https://indycars.com.ar/wp-content/uploads/2023/11/VOLKSWAGEN-BORA-2.jpg"
+    },
+    {
+      "precio": 15000000,
+      "id": 2,
+      "title": "Vento",
+      "description": "2019/65.000km",
+      "thumbnailUrl": "https://www.megautos.com/wp-content/uploads/2015/08/4986_.jpg"
+    },
+    {
+      "precio": 30000000,
+      "id": 3,
+      "title": "Amarok V6",
+      "description": "2022/18.000km",
+      "thumbnailUrl": "https://cdn.motor1.com/images/mgl/VRW87/s3/primicia-confirmada-vw-presento-la-amarok-v6.jpg"
+    },
+    {
+      "precio": 48000000,
+      "id": 4,
+      "title": "Scirocco",
+      "description": "2023/0km",
+      "thumbnailUrl": "https://www.megautos.com/images_db/imgsImg/Image/VW%20Scirocco/Scirocco%20III.jpg"
+    },
+    {
+      "precio": 38000000,
+      "id": 5,
+      "title": "Taos",
+      "description": "2024/0km",
+      "thumbnailUrl": "https://cdn.motor1.com/images/mgl/Y0wYl/s1/volkswagen-taos-2021.jpg"
+    },
+    {
+      "precio": 9000000,
+      "id": 6,
+      "title": "Fox",
+      "description": "2018/85.000km",
+      "thumbnailUrl": "https://p.turbosquid.com/ts-thumb/Sg/WyPAoN/eF8m7J7r/fox1/jpg/1282212956/600x600/fit_q87/9c224063a88202311fa36c2e90109bb93917f79d/fox1.jpg"
+    }
+  ]
